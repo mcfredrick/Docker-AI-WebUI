@@ -18,6 +18,11 @@ WORKDIR /home/myuser
 # Download the webui
 RUN wget -q "https://raw.githubusercontent.com/AUTOMATIC1111/stable-diffusion-webui/master/webui.sh" -O webui.sh
 RUN chmod +x webui.sh
+
+# set up the environment
+ENV PYTORCH_CUDA_ALLOC_CONF=garbage_collection_threshold:0.6,max_split_size_mb:512
+# ENV COMMANDLINE_ARGS=--precision,full,--no-half,--lowvram,--always-batch-cond-uncond,--xformers
+
 RUN ./webui.sh
 
 # Create the extensions directory
@@ -34,4 +39,4 @@ RUN git clone "https://github.com/AlUlkesh/stable-diffusion-webui-images-browser
 WORKDIR /home/myuser
 
 # Start the webui with API enabled, listening on all interfaces and allowing insecure extension access
-CMD [ "/home/myuser/webui.sh", "--api", "--listen", "--enable-insecure-extension-access" ]
+CMD [ "/home/myuser/webui.sh", "--api", "--listen", "--enable-insecure-extension-access", "--precision", "full", "--no-half", "--lowvram", "--always-batch-cond-uncond", "--xformers" ]
